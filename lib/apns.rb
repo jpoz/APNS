@@ -20,7 +20,7 @@ module APNS
   end
   
   def self.send_notification(device_token, message_hash)
-    sock, ssl = self.open_connection  
+    sock, ssl = self.open_connection
     ssl.write(self.packaged_notification(device_token, message_hash))
 
     ssl.close
@@ -47,12 +47,12 @@ module APNS
     raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
     raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
     
-    context = OpenSSL::SSL::SSLContext.new
+    context      = OpenSSL::SSL::SSLContext.new
     context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
 
-    sock = TCPSocket.new(self.host, self.port)
-    ssl = OpenSSL::SSL::SSLSocket.new(sock,context)
+    sock         = TCPSocket.new(self.host, self.port)
+    ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
     ssl.connect
 
     return sock, ssl
