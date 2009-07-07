@@ -1,0 +1,6 @@
+h2. Apple Push Notification Service
+
+h3. Example:
+
+APNS.pem = '/path/to/pem/file' # openssl pkcs12 -in mycert.p12 -out client-cert.pem -nodes -clcerts
+APNS.send_notification('123234423asdflasdfsdf123123123123123', {:aps => {:alert => 'Hello iPhone!', :badge => 1, :sound => 'default'}})
