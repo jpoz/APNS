@@ -7,11 +7,11 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["James Pozdena"]
   s.autorequire = %q{apns}
-  s.date = %q{2009-07-07}
+  s.date = %q{2009-07-09}
   s.description = %q{Simple Apple push notification service gem}
   s.email = %q{jpoz@jpoz.net}
   s.extra_rdoc_files = ["MIT-LICENSE"]
-  s.files = ["MIT-LICENSE", "README.textile", "Rakefile", "lib/apns.rb"]
+  s.files = ["MIT-LICENSE", "README.textile", "Rakefile", "lib/apns", "lib/apns/core.rb", "lib/apns/notification.rb", "lib/apns.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/jpoz/apns}
   s.require_paths = ["lib"]

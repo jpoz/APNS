@@ -74,9 +74,10 @@ ApplicationAppDelegate.m
     {
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     }
-
+    
+    
     - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    	NSLog(@"deviceToken: %@", deviceToken);
+      NSLog(@"deviceToken: %@", deviceToken);
     }
   </code>
 </pre>
