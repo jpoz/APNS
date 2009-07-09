@@ -1,53 +1,55 @@
-h2. Apple Push Notification Service
+h1. APNS
 
-h3. Install
+a gem for the Apple Push Notification Service
+
+h2. Install
 
 gem sources -a http://gems.github.com
     
 sudo gem install jpoz-apns
 
 
-h3. Setup:
+h2. Setup:
 
 Set what host, port, pem file and password on the APNS class:
 
 <pre>
   <code>
-APNS.host = 'gateway.push.apple.com' 
-# gateway.sandbox.push.apple.com is default
+    APNS.host = 'gateway.push.apple.com' 
+    # gateway.sandbox.push.apple.com is default
 
-APNS.port = 2195 
-# this is also the default. Shouldn't ever have to set this, but just Apple goes crazy, you can.
+    APNS.port = 2195 
+    # this is also the default. Shouldn't ever have to set this, but just Apple goes crazy, you can.
 
-APNS.pem  = '/path/to/pem/file'
-# openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
+    APNS.pem  = '/path/to/pem/file'
+    # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
 
-APNS.pass = 'secret'
+    APNS.pass = 'secret'
   </code>
 </pre>
 
-h3. Example:
+h2. Example:
 
 Then to send a push notification you can either just send a string as the alert or give it a hash for the alert, badge and sound.
 
 <pre>
   <code>
-device_token = '123abc456def'
+    device_token = '123abc456def'
 
-APNS.send_notification(device_token, 'Hello iPhone!' )
+    APNS.send_notification(device_token, 'Hello iPhone!' )
 
-APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
+    APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
   </code>
 </pre>
 
-h3. Send other info along with aps
+h2. Send other info along with aps
 
 You can send other application specific information as well.
 
 <pre>
   <code>
-APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default',
-                                     :other => {:sent => 'with apns gem'})
+    APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default',
+                                         :other => {:sent => 'with apns gem'})
   </code>
 </pre>
 
@@ -55,27 +57,27 @@ This will add the other hash to the same level as the aps hash:
 
 <pre>
   <code>
-{"aps":{"alert":"Hello iPhone!","badge":1,"sound":"default"},"sent":"with apns gem"}
+    {"aps":{"alert":"Hello iPhone!","badge":1,"sound":"default"},"sent":"with apns gem"}
   </code>
 </pre>
 
 
-h3. Getting your iPhone's device token
+h2. Getting your iPhone's device token
 
 After you setup push notification for your application with Apple. You need to ask Apple for you application specific device token.
 
 ApplicationAppDelegate.m
 <pre>
   <code>
-- (BOOL)application:(UIApplication *)application 
-didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
-{
-[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
-}
+    - (BOOL)application:(UIApplication *)application 
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+    {
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
+    }
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-	NSLog(@"deviceToken: %@", deviceToken);
-}
+    - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    	NSLog(@"deviceToken: %@", deviceToken);
+    }
   </code>
 </pre>
     
