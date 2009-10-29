@@ -1,6 +1,6 @@
 h1. APNS
 
-a gem for the Apple Push Notification Service
+a gem for the Apple Push Notification Service.
 
 h2. Install
 
@@ -18,13 +18,12 @@ Set what host, port, pem file and password on the APNS class:
     APNS.host = 'gateway.push.apple.com' 
     # gateway.sandbox.push.apple.com is default
 
-    APNS.port = 2195 
-    # this is also the default. Shouldn't ever have to set this, but just Apple goes crazy, you can.
-
     APNS.pem  = '/path/to/pem/file'
-    # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
-
     APNS.pass = 'secret'
+    # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
+    
+    APNS.port = 2195 
+    # this is also the default. Shouldn't ever have to set this, but just in case Apple goes crazy, you can.
   </code>
 </pre>
 
@@ -74,7 +73,6 @@ ApplicationAppDelegate.m
     {
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     }
-    
     
     - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
       NSLog(@"deviceToken: %@", deviceToken);

@@ -47,7 +47,7 @@ module APNS
     other = hash.delete(:other)
     aps = {'aps'=> hash }
     aps.merge(other) if other
-    JSON.generate(aps)
+    aps.to_json
   end
   
   def self.open_connection
