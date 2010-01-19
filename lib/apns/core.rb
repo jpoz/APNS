@@ -46,7 +46,7 @@ module APNS
   def self.apns_from_hash(hash)
     other = hash.delete(:other)
     aps = {'aps'=> hash }
-    aps.merge(other) if other
+    aps.merge!(other) if other
     aps.to_json
   end
   
