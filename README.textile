@@ -4,14 +4,22 @@ a gem for the Apple Push Notification Service.
 
 h2. Install
 
-gem sources -a http://gems.github.com
-    
-sudo gem install jpoz-apns
-
+sudo gem install apns
 
 h2. Setup:
 
-Set what host, port, pem file and password on the APNS class:
+Convert your certificate
+
+In Keychain access export your certificate as a p12. Then run the following command to convert it to a .pem
+
+
+<pre>
+  <code>
+    openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
+  </code>
+</pre>
+
+After you have your .pem file. Set what host, port, certificate file location on the APNS class:
 
 <pre>
   <code>
@@ -19,15 +27,14 @@ Set what host, port, pem file and password on the APNS class:
     # gateway.sandbox.push.apple.com is default
 
     APNS.pem  = '/path/to/pem/file'
-    APNS.pass = 'secret'
-    # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
+    # this is the file you just created
     
     APNS.port = 2195 
     # this is also the default. Shouldn't ever have to set this, but just in case Apple goes crazy, you can.
   </code>
 </pre>
 
-h2. Example:
+h2. Example (Single notification):
 
 Then to send a push notification you can either just send a string as the alert or give it a hash for the alert, badge and sound.
 
@@ -40,6 +47,23 @@ Then to send a push notification you can either just send a string as the alert 
     APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
   </code>
 </pre>
+
+h2. Example (Multiple notifications):
+
+You can also send multiple notifications using the same connection to Apple:
+
+<pre>
+  <code>
+    device_token = '123abc456def'
+
+    n1 = APNS::Notification.new(device_token, 'Hello iPhone!' )
+
+    n2 = APNS::Notification.new(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
+    
+    APNS.send_notifications([n1, n2])
+  </code>
+</pre>
+
 
 h2. Send other info along with aps
 

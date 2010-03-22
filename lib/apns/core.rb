@@ -21,6 +21,17 @@ module APNS
     sock.close
   end
   
+  def self.send_notifications(notifications)
+    sock, ssl = self.open_connection
+    
+    notifications.each do |n|
+      ssl.write(n.packaged_notification)
+    end
+    
+    ssl.close
+    sock.close
+  end
+  
   protected
 
   def self.packaged_notification(device_token, message)
