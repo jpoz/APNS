@@ -12,7 +12,6 @@ Convert your certificate
 
 In Keychain access export your certificate as a p12. Then run the following command to convert it to a .pem
 
-
 <pre>
   <code>
     openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
