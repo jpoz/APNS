@@ -91,14 +91,15 @@ After you setup push notification for your application with Apple. You need to a
 ApplicationAppDelegate.m
 <pre>
   <code>
-    - (BOOL)application:(UIApplication *)application 
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
-    {
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
+    - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+        // Register with apple that this app will use push notification
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | 
+          UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];	
     }
-    
+
     - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-      NSLog(@"deviceToken: %@", deviceToken);
+        // Show the device token obtained from apple to the log
+        NSLog(@"deviceToken: %@", deviceToken);
     }
   </code>
 </pre>
