@@ -7,9 +7,9 @@ module APNS
 
     attr_accessor :host, :pem, :port, :pass
 
-    def initialize(host = GATEWAY_HOST, port = 2195, pem = nil, pass = nil)
-      @host = host
-      @port = port
+    def initialize(host = nil, port = nil, pem = nil, pass = nil)
+      @host = host || 'gateway.sandbox.push.apple.com'
+      @port = port || 2195
       @pem = pem
       @pass = pass
     end
