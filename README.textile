@@ -22,13 +22,13 @@ After you have your .pem file. Set what host, port, certificate file location on
 
 <pre>
   <code>
-    APNS.host = 'gateway.push.apple.com' 
+    APNS.host = 'gateway.push.apple.com'
     # gateway.sandbox.push.apple.com is default
 
     APNS.pem  = '/path/to/pem/file'
     # this is the file you just created
-    
-    APNS.port = 2195 
+
+    APNS.port = 2195
     # this is also the default. Shouldn't ever have to set this, but just in case Apple goes crazy, you can.
   </code>
 </pre>
@@ -58,7 +58,7 @@ You can also send multiple notifications using the same connection to Apple:
     n1 = APNS::Notification.new(device_token, 'Hello iPhone!' )
 
     n2 = APNS::Notification.new(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
-    
+
     APNS.send_notifications([n1, n2])
   </code>
 </pre>
@@ -91,10 +91,10 @@ After you setup push notification for your application with Apple. You need to a
 ApplicationAppDelegate.m
 <pre>
   <code>
-    - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+    - (void)applicationDidFinishLaunching:(UIApplication *)application {
         // Register with apple that this app will use push notification
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | 
-          UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];	
+          UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     }
 
     - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -103,6 +103,14 @@ ApplicationAppDelegate.m
     }
   </code>
 </pre>
-    
 
+h2. Creating a second client
 
+Sometimes it can be useful to have a second (or third!) client to work with to manage multiple credential sets.
+
+<pre>
+  <code>
+    client = APNS::Client.new
+    client.send_notification(device_token, :alert => 'hello!')
+  </code>
+</pre>
