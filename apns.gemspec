@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Simple Apple push notification service gem}
   s.email = %q{jpoz@jpoz.net}
   s.extra_rdoc_files = ["MIT-LICENSE"]
-  s.files = ["MIT-LICENSE", "README.md", "Rakefile", "lib/apns", "lib/apns/connector.rb", "lib/apns.rb"]
+  s.files = ["MIT-LICENSE", "README.md", "Rakefile", "lib/apns", "lib/apns/connector.rb", "lib/apns/notification.rb", "lib/apns.rb"]
   s.homepage = %q{http://github.com/jpoz/apns}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
