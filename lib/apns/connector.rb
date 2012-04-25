@@ -47,7 +47,7 @@ module APNS
       apns_feedback
     end
 
-    protected
+    private
 
     def open_connection
       check_pem!
@@ -78,8 +78,6 @@ module APNS
 
       [sock, ssl]
     end
-
-    private
 
     def check_pem!
       raise "the path to your pem file is not set. (apns.pem = /path/to/cert.pem)" unless self.pem

@@ -1,5 +1,6 @@
 module APNS
   class Notification
+
     attr_accessor :device_token, :alert, :badge, :sound, :other
 
     def initialize(device_token, message)
@@ -23,7 +24,7 @@ module APNS
     end
 
     def packaged_token
-      [device_token.gsub(/[\s|<|>]/,'')].pack('H*')
+      [device_token.gsub(/[\s|<|>]/, '')].pack('H*')
     end
 
     def packaged_message
