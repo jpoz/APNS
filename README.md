@@ -62,8 +62,12 @@ APNS.send_notifications([n1, n2])
 You can send other application specific information as well.
 
 ``` ruby
-APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default',
-																		 :other => {:sent => 'with apns gem'})
+APNS.send_notification(device_token,
+  :alert => 'Hello iPhone!',
+  :badge => 1,
+  :sound => 'default',
+  :other => {:sent => 'with apns gem'}
+)
 ```
 
 This will add the other hash to the same level as the aps hash:
@@ -79,14 +83,14 @@ After you setup push notification for your application with Apple. You need to a
 
 ``` objc
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
-		// Register with apple that this app will use push notification
-		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | 
-			UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
+	// Register with apple that this app will use push notification
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | 
+	UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-		// Show the device token obtained from apple to the log
-		NSLog(@"deviceToken: %@", deviceToken);
+	// Show the device token obtained from apple to the log
+	NSLog(@"deviceToken: %@", deviceToken);
 }
 ```
 
