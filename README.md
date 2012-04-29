@@ -79,7 +79,8 @@ This will add the other hash to the same level as the aps hash:
 
 ## Getting your iPhone's device token
 
-After you setup push notification for your application with Apple. You need to ask Apple for you application specific device token.
+After you setup push notification for your application with Apple. You need to
+ask Apple for you application specific device token.
 
 ``` objc
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
@@ -96,7 +97,8 @@ After you setup push notification for your application with Apple. You need to a
 
 ## Creating a second client
 
-Sometimes it can be useful to have a second (or third!) client to work with to manage multiple credential sets.
+Sometimes it can be useful to have a second (or third!) client to work with to
+manage multiple credential sets.
 
 ``` ruby
 client = APNS::Client.new
