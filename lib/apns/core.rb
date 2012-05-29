@@ -53,8 +53,13 @@ module APNS
     raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
     
     context      = OpenSSL::SSL::SSLContext.new
-    context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+    # context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
+    # context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+
+    # for mac os keychain export.
+    pkcs = OpenSSL::PKCS12.new(File.read(self.pem), self.pass)
+    context.cert = pkcs.certificate
+    context.key = pkcs.key
 
     sock         = TCPSocket.new(self.host, self.port)
     ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
