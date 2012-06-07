@@ -8,7 +8,7 @@ module APNS
   # openssl pkcs12 -in mycert.p12 -out client-cert.pem -nodes -clcerts
   @pem = nil # this should be the path of the pem file not the contentes
   @pass = nil
-  
+
   class << self
     attr_accessor :host, :pem, :port, :pass
   end
@@ -19,66 +19,30 @@ module APNS
   end
   
   def self.send_notifications(notifications)
-    sock, ssl = self.open_connection
-    
-    notifications.each do |n|
-      ssl.write(n.packaged_notification)
+    with_connection(NotificationConnection) do |conn|
+      conn.send_notifications(notifications)
     end
-    
-    ssl.close
-    sock.close
   end
   
   def self.feedback
-    sock, ssl = self.feedback_connection
-    
-    apns_feedback = []
-    
-    while line = sock.gets   # Read lines from the socket
-      line.strip!
-      f = line.unpack('N1n1H140')
-      apns_feedback << [Time.at(f[0]), f[2]]
+    with_connection(FeedbackConnection) do |conn|
+      conn.feedback
     end
-    
-    ssl.close
-    sock.close
-    
-    return apns_feedback
   end
   
   protected
 
-  def self.open_connection
+  def self.with_connection(type)
     raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
-    raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
-    
-    context      = OpenSSL::SSL::SSLContext.new
-    context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
 
-    sock         = TCPSocket.new(self.host, self.port)
-    ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
-    ssl.connect
-
-    return sock, ssl
-  end
+    connection = type.new(:host => self.host, :port => self.port, :pem => self.pem, :pass => self.pass)
+    yield connection
   
-  def self.feedback_connection
-    raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
-    raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
-    
-    context      = OpenSSL::SSL::SSLContext.new
-    context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
-
-    fhost = self.host.gsub('gateway','feedback')
-    puts fhost
-    
-    sock         = TCPSocket.new(fhost, 2196)
-    ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
-    ssl.connect
-
-    return sock, ssl
+  ensure
+    connection.close if connection    
   end
-  
+
+  def self.feedback_host
+    self.host.gsub('gateway','feedback')
+  end
 end
