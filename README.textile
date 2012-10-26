@@ -88,22 +88,48 @@ h2. Getting your iPhone's device token
 
 After you setup push notification for your application with Apple. You need to ask Apple for you application specific device token.
 
-ApplicationAppDelegate.m
+h3. ApplicationAppDelegate.m
+
 <pre>
   <code>
-    - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+    - (void)applicationDidFinishLaunching:(UIApplication *)application 
+    {    
         // Register with apple that this app will use push notification
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | 
-          UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];	
+          UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
+
+        // Your app startup logic...
+        return YES;
     }
 
-    - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken 
+    {
+        // Convert the binary data token into an NSString (see below for the implementation of this function)
+        NSString *deviceTokenAsString = stringFromDeviceTokenData(deviceToken);
+
         // Show the device token obtained from apple to the log
-        NSLog(@"deviceToken: %@", deviceToken);
+        NSLog(@"deviceToken: %@", deviceTokenAsString);
     }
   </code>
 </pre>
-    
-!http://goo.gl/sqxB8(fail)!
 
+h3. stringFromDeviceTokenData function
 
+This snippet comes from "this stackoverflow post's anwser":http://stackoverflow.com/a/1990880/855846.
+<pre>
+  <code>
+    NSString* stringFromDeviceTokenData(NSData *deviceToken)
+    {
+      const char *data = [deviceToken bytes];
+      NSMutableString* token = [NSMutableString string];
+      
+      for (int i = 0; i < [deviceToken length]; i++) {
+        [token appendFormat:@"%02.2hhX", data[i]];
+      }
+      
+      return [[token copy] autorelease];
+    }
+  </code>
+</pre>
+
+For more information on Apple Push Notifications you can see Apple Developer Documentation "here":http://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/IPhoneOSClientImp/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW2.
