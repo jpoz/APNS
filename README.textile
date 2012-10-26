@@ -126,7 +126,7 @@ This snippet comes from "this stackoverflow post's anwser":http://stackoverflow.
       for (int i = 0; i < [deviceToken length]; i++) {
         [token appendFormat:@"%02.2hhX", data[i]];
       }
-
+      
       return [[token copy] autorelease];
   }
   </code>
