@@ -88,7 +88,7 @@ h2. Getting your iPhone's device token
 
 After you setup push notification for your application with Apple. You need to ask Apple for you application specific device token.
 
-h3. ApplicationAppDelegate.
+h3. ApplicationAppDelegate.m
 
 <pre>
   <code>
