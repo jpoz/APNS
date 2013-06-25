@@ -1,4 +1,3 @@
-require 'pp'
 module APNS
   require 'socket'
   require 'openssl'
