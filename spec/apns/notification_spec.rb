@@ -13,6 +13,12 @@ describe APNS::Notification do
     n.badge.should == 3
   end
   
+  it "should have a priority if content_availible is set"  do
+    n = APNS::Notification.new('device_token', {:content_availible => true})
+    n.content_availible.should be_true
+    n.priority.should eql(5)
+  end
+
   describe '#packaged_message' do
     
     it "should return JSON with notification information" do
@@ -23,6 +29,11 @@ describe APNS::Notification do
     it "should not include keys that are empty in the JSON" do
       n = APNS::Notification.new('device_token', {:badge => 3})
       n.packaged_message.should == "{\"aps\":{\"badge\":3}}"
+    end
+
+    it "should return JSON with content availible" do
+      n = APNS::Notification.new('device_token', {:content_availible => true})
+      n.packaged_message.should  == "{\"aps\":{\"content-availible\":1}}"
     end
     
   end
@@ -37,7 +48,8 @@ describe APNS::Notification do
   describe '#packaged_notification' do
     it "should package the token" do
       n = APNS::Notification.new('device_token', {:alert => 'Hello iPhone', :badge => 3, :sound => 'awesome.caf'})
-      Base64.encode64(n.packaged_notification).should == "AAAg3vLO/YTnAEB7ImFwcyI6eyJhbGVydCI6IkhlbGxvIGlQaG9uZSIsImJh\nZGdlIjozLCJzb3VuZCI6ImF3ZXNvbWUuY2FmIn19\n"
+      n.stub!(:message_identifier).and_return('aaaa') # make sure the message_identifier is not random
+      Base64.encode64(n.packaged_notification).should == "AQAG3vLO/YTnAgBAeyJhcHMiOnsiYWxlcnQiOiJIZWxsbyBpUGhvbmUiLCJi\nYWRnZSI6Mywic291bmQiOiJhd2Vzb21lLmNhZiJ9fQMABGFhYWEEAAQAAAAA\nBQABCg==\n"
     end
   end
   
