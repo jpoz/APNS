@@ -35,7 +35,7 @@ module APNS
       pm = self.packaged_message
       pi = self.message_identifier
       pe = (self.expiration_date || 0).to_i
-      pr = self.priority
+      pr = (self.priority || 10).to_i
 
       # Each item consist of
       # 1. unsigned char [1 byte] is the item (type) number according to Apple's docs
