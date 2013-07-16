@@ -4,7 +4,7 @@ module APNS
   class Notification
     attr_accessor :device_token, :alert, :badge, :sound, :other, :priority
     attr_accessor :message_identifier, :expiration_date
-    attr_accessor :content_availible
+    attr_accessor :content_available
     
     def initialize(device_token, message)
       self.device_token = device_token
@@ -14,9 +14,9 @@ module APNS
         self.sound = message[:sound]
         self.other = message[:other]
         self.message_identifier = message[:message_identifier]
-        self.content_availible = !message[:content_availible].nil?
+        self.content_available = !message[:content_available].nil?
         self.expiration_date = message[:expiration_date]
-        self.priority = if self.content_availible
+        self.priority = if self.content_available
           message[:priority] || 5
         else
           message[:priority] || 10
@@ -60,7 +60,7 @@ module APNS
       aps['aps']['alert'] = self.alert if self.alert
       aps['aps']['badge'] = self.badge if self.badge
       aps['aps']['sound'] = self.sound if self.sound
-      aps['aps']['content-availible'] = 1 if self.content_availible
+      aps['aps']['content-available'] = 1 if self.content_available
 
       aps.merge!(self.other) if self.other
       aps.to_json

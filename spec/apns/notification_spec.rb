@@ -14,8 +14,8 @@ describe APNS::Notification do
   end
   
   it "should have a priority if content_availible is set"  do
-    n = APNS::Notification.new('device_token', {:content_availible => true})
-    n.content_availible.should be_true
+    n = APNS::Notification.new('device_token', {:content_available => true})
+    n.content_available.should be_true
     n.priority.should eql(5)
   end
 
@@ -32,8 +32,8 @@ describe APNS::Notification do
     end
 
     it "should return JSON with content availible" do
-      n = APNS::Notification.new('device_token', {:content_availible => true})
-      n.packaged_message.should  == "{\"aps\":{\"content-availible\":1}}"
+      n = APNS::Notification.new('device_token', {:content_available => true})
+      n.packaged_message.should  == "{\"aps\":{\"content-available\":1}}"
     end
     
   end
