@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    apns (0.9.0)
+    apns (1.1.0)
 
 GEM
   remote: http://rubygems.org/
