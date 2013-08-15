@@ -21,12 +21,28 @@ module APNS
   def self.send_notifications(notifications)
     sock, ssl = self.open_connection
 
+    packed_nofications = self.packed_nofications(notifications)
+
     notifications.each do |n|
-      ssl.write(n.packaged_notification)
+      ssl.write(packed_nofications)
     end
 
     ssl.close
     sock.close
+  end
+
+  def self.packed_nofications(notifications)
+    bytes = ''
+
+    notifications.each do |notification|
+      # Each notification frame consists of
+      # 1. (e.g. protocol version) 2 (unsigned char [1 byte]) 
+      # 2. size of the full frame (unsigend int [4 byte], big endian)
+      pn = notification.packaged_notification
+      bytes << ([2, pn.bytesize].pack('CN') + pn)
+    end
+
+    bytes
   end
 
   def self.feedback
