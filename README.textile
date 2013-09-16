@@ -47,6 +47,15 @@ Then to send a push notification you can either just send a string as the alert 
   </code>
 </pre>
 
+If your pem file has a passpharase, you can the value to APNS by
+
+<pre>
+  <code>
+    APNS.pass = "myprettypassphrase"
+  </code>
+</pre>
+
+
 h2. Example (Multiple notifications):
 
 You can also send multiple notifications using the same connection to Apple:
@@ -124,7 +133,7 @@ This snippet comes from "this stackoverflow post's anwser":http://stackoverflow.
       NSMutableString* token = [NSMutableString string];
       
       for (int i = 0; i < [deviceToken length]; i++) {
-        [token appendFormat:@"%02.2hhX", data[i]];
+            [token appendFormat:@"%02.2hhX", data[i]];
       }
       
       return [[token copy] autorelease];
