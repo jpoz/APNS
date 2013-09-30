@@ -12,6 +12,12 @@ describe APNS::Notification do
     n.alert.should == "Hello iPhone"
     n.badge.should == 3
   end
+
+  it "should take a hash whose keys are strings as the message" do
+    n = APNS::Notification.new('device_token', {"alert" => 'Hello iPhone', "badge" => 3})
+    n.alert.should == "Hello iPhone"
+    n.badge.should == 3
+  end
   
   it "should have a priority if content_availible is set"  do
     n = APNS::Notification.new('device_token', {:content_available => true})
