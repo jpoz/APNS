@@ -9,10 +9,10 @@ module APNS
     def initialize(device_token, message)
       self.device_token = device_token
       if message.is_a?(Hash)
-        self.alert = message[:alert]
-        self.badge = message[:badge]
-        self.sound = message[:sound]
-        self.other = message[:other]
+        self.alert = message[:alert] || message["alert"]
+        self.badge = message[:badge] || message["badge"]
+        self.sound = message[:sound] || message["sound"]
+        self.other = message[:other] || message["other"]
         self.message_identifier = message[:message_identifier]
         self.content_available = !message[:content_available].nil?
         self.expiration_date = message[:expiration_date]
