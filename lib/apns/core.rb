@@ -3,6 +3,8 @@ module APNS
   require 'openssl'
   require 'json'
 
+  TIMEOUT = 0.2
+
   @host = 'gateway.sandbox.push.apple.com'
   @port = 2195
   # openssl pkcs12 -in mycert.p12 -out client-cert.pem -nodes -clcerts
@@ -18,17 +20,33 @@ module APNS
     self.send_notifications([n])
   end
 
+  # improved send_notification to listen on errors
   def self.send_notifications(notifications)
+    error = 0; idx = 0
     sock, ssl = self.open_connection
 
+    # prepares the messages to be send
+    notifications.each_with_index{|apns_notf, idx| apns_notf.message_identifier = [idx].pack('N')}
+
+    # packs all notifications into a single pack
     packed_nofications = self.packed_nofications(notifications)
 
-    notifications.each do |n|
-      ssl.write(packed_nofications)
-    end
+    # sends the notifications
+    ssl.write(packed_nofications)         
+
+      # if we get and error
+      if IO.select([ssl], nil, nil, TIMEOUT)
+        
+        if buffer = ssl.read(6)
+          _, error_code, idx = buffer.unpack('CCN')
+          error = error_code.to_i
+        end
+      end
 
     ssl.close
     sock.close
+
+    return error, idx
   end
 
   def self.packed_nofications(notifications)
