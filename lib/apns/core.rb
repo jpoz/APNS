@@ -85,7 +85,7 @@ module APNS
   end
 
   def self.get_context
-    context      = OpenSSL::SSL::SSLContext.new
+    context = OpenSSL::SSL::SSLContext.new
     if self.pem
       raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
       context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
