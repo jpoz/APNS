@@ -7,10 +7,11 @@ module APNS
   @port = 2195
   # openssl pkcs12 -in mycert.p12 -out client-cert.pem -nodes -clcerts
   @pem = nil # this should be the path of the pem file not the contentes
+  @pemContents = nil # Alternative, this is the contents of the pem file instead of the file path
   @pass = nil
 
   class << self
-    attr_accessor :host, :pem, :port, :pass
+    attr_accessor :host, :pem, :port, :pass, :pemContents,
   end
 
   def self.send_notification(device_token, message)
@@ -64,12 +65,20 @@ module APNS
   protected
 
   def self.open_connection
-    raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
-    raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
-
     context      = OpenSSL::SSL::SSLContext.new
-    context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+    
+    if self.pem && self.pemContents.nil?
+      raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
+      context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
+      context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+
+    elsif self.pemContents && self.pem.nil?
+      raise "The contents to your pem file are empty!" unless self.pemContents.empty?
+      context.cert = OpenSSL::X509::Certificate.new(self.pemContents)
+      context.key  = OpenSSL::PKey::RSA.new(self.pemContents, self.pass)
+    end
+
+    #raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
 
     sock         = TCPSocket.new(self.host, self.port)
     ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
@@ -79,12 +88,20 @@ module APNS
   end
 
   def self.feedback_connection
-    raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
-    raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
+    context = OpenSSL::SSL::SSLContext.new
 
-    context      = OpenSSL::SSL::SSLContext.new
-    context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
-    context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+    if self.pem && self.pemContents.nil?
+      raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
+      context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
+      context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
+
+    elsif self.pemContents && self.pem.nil?
+      raise "The contents to your pem file are empty!" unless self.pemContents.empty?
+      context.cert = OpenSSL::X509::Certificate.new(self.pemContents)
+      context.key  = OpenSSL::PKey::RSA.new(self.pemContents, self.pass)
+    end
+
+    #raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
 
     fhost = self.host.gsub('gateway','feedback')
     puts fhost
