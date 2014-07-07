@@ -87,7 +87,6 @@ module APNS
     context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
 
     fhost = self.host.gsub('gateway','feedback')
-    puts fhost
 
     sock         = TCPSocket.new(fhost, 2196)
     ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
