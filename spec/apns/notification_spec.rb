@@ -26,6 +26,11 @@ describe APNS::Notification do
       n.packaged_message.should  == "{\"aps\":{\"alert\":\"Hello iPhone\",\"badge\":3,\"sound\":\"awesome.caf\"}}"
     end
 
+    it "should support the iOS 8 category key" do
+      n = APNS::Notification.new('device_token', {:alert => 'Hello iPhone', :badge => 3, :category => 'CATEGORY_IDENTIFIER'})
+      n.packaged_message.should  == "{\"aps\":{\"alert\":\"Hello iPhone\",\"badge\":3,\"category\":\"CATEGORY_IDENTIFIER\"}}"
+    end
+
     it "should not include keys that are empty in the JSON" do
       n = APNS::Notification.new('device_token', {:badge => 3})
       n.packaged_message.should == "{\"aps\":{\"badge\":3}}"
