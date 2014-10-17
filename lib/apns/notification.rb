@@ -5,7 +5,7 @@ module APNS
     attr_accessor :device_token, :alert, :badge, :sound, :other, :priority
     attr_accessor :message_identifier, :expiration_date
     attr_accessor :content_available
-    
+
     def initialize(device_token, message)
       self.device_token = device_token
       if message.is_a?(Hash)
@@ -29,7 +29,7 @@ module APNS
 
       self.message_identifier ||= OpenSSL::Random.random_bytes(4)
     end
-        
+
     def packaged_notification
       pt = self.packaged_token
       pm = self.packaged_message
@@ -47,14 +47,14 @@ module APNS
       data << [3, pi.bytesize, pi].pack("CnA*")
       data << [4, 4, pe].pack("CnN")
       data << [5, 1, pr].pack("CnC")
-      
+
       data
     end
-  
+
     def packaged_token
       [device_token.gsub(/[\s|<|>]/,'')].pack('H*')
     end
-  
+
     def packaged_message
       aps = {'aps'=> {} }
       aps['aps']['alert'] = self.alert if self.alert
@@ -64,6 +64,6 @@ module APNS
 
       aps.merge!(self.other) if self.other
       aps.to_json
-    end    
+    end
   end
 end
