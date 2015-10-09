@@ -1,7 +1,9 @@
 module APNS
+  require "net/http"
   require 'socket'
   require 'openssl'
   require 'json'
+  require 'uri'
 
   @host = 'gateway.sandbox.push.apple.com'
   @port = 2195
@@ -10,7 +12,7 @@ module APNS
   @pass = nil
 
   class << self
-    attr_accessor :host, :pem, :port, :pass
+    attr_accessor :host, :pem, :port, :pass, :proxy
   end
 
   def self.send_notification(device_token, message)
@@ -63,6 +65,25 @@ module APNS
 
   protected
 
+  def self.open_conn_with_proxy(host, port)
+    return TCPSocket.new(self.host, self.port) unless self.proxy.present?
+
+    proxy_uri = URI.parse(self.proxy)
+    sock = TCPSocket.new(proxy_uri.host, proxy_uri.port)
+    sock << "CONNECT #{self.host}:#{self.port} HTTP/1.1\r\n"
+    sock << "Host: #{self.host}:#{self.port}\r\n"
+    sock << "Proxy-Authorization: Basic #{["#{proxy_uri.user}:#{proxy_uri.password}"].pack("m").chomp}\r\n" if proxy_uri.user
+    sock << "\r\n"
+
+    buffer = Net::BufferedIO.new(sock)
+    response = Net::HTTPResponse.read_new(buffer)
+    if not response.is_a? Net::HTTPOK
+      raise SocketError.new("Proxy refused connection [#{response.code}]")
+    end
+
+    return sock
+  end
+
   def self.open_connection
     raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless self.pem
     raise "The path to your pem file does not exist!" unless File.exist?(self.pem)
@@ -71,7 +92,7 @@ module APNS
     context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
     context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
 
-    sock         = TCPSocket.new(self.host, self.port)
+    sock         = self.open_conn_with_proxy(self.host, self.port)
     ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
     ssl.connect
 
@@ -89,7 +110,7 @@ module APNS
     fhost = self.host.gsub('gateway','feedback')
     puts fhost
 
-    sock         = TCPSocket.new(fhost, 2196)
+    sock         = self.open_conn_with_proxy(fhost, 2196)
     ssl          = OpenSSL::SSL::SSLSocket.new(sock,context)
     ssl.connect
 
