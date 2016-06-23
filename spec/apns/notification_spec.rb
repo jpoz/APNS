@@ -35,6 +35,11 @@ describe APNS::Notification do
       n = APNS::Notification.new('device_token', {:content_available => true})
       n.packaged_message.should  == "{\"aps\":{\"content-available\":1}}"
     end
+
+    it "should return JSON with category" do
+      n = APNS::Notification.new('device_token', {:category => 'MESSAGE'})
+      n.packaged_message.should  == "{\"aps\":{\"category\":\"MESSAGE\"}}"
+    end
     
   end
   
