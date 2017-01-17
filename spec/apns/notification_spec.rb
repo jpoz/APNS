@@ -41,6 +41,11 @@ describe APNS::Notification do
       n.packaged_message.should  == "{\"aps\":{\"content-available\":1}}"
     end
 
+    it 'should accept mutable-content key only if mentionned' do
+      n = APNS::Notification.new('device_token', {:mutable_content => 1})
+      n.packaged_message.should  == "{\"aps\":{\"mutable-content\":1}}"
+    end
+
   end
 
   describe '#package_token' do
