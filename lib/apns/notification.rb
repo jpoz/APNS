@@ -5,6 +5,7 @@ module APNS
     attr_accessor :device_token, :alert, :badge, :sound, :category, :other, :priority
     attr_accessor :message_identifier, :expiration_date
     attr_accessor :content_available
+    attr_accessor :mutable_content
 
     def initialize(device_token, message)
       self.device_token = device_token
@@ -14,6 +15,7 @@ module APNS
         self.sound = message[:sound]
         self.category = message[:category]
         self.other = message[:other]
+        self.mutable_content = message[:mutable_content]
         self.message_identifier = message[:message_identifier]
         self.content_available = !message[:content_available].nil?
         self.expiration_date = message[:expiration_date]
@@ -63,6 +65,7 @@ module APNS
       aps['aps']['sound'] = self.sound if self.sound
       aps['aps']['category'] = self.category if self.category
       aps['aps']['content-available'] = 1 if self.content_available
+      aps['aps']['mutable-content'] = 1 if self.mutable_content
 
       aps.merge!(self.other) if self.other
       aps.to_json
