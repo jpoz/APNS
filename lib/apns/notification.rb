@@ -2,7 +2,7 @@ module APNS
   require 'openssl'
 
   class Notification
-    attr_accessor :device_token, :alert, :badge, :sound, :other, :priority
+    attr_accessor :device_token, :alert, :badge, :sound, :other, :priority, :category
     attr_accessor :message_identifier, :expiration_date
     attr_accessor :content_available
     
@@ -13,6 +13,7 @@ module APNS
         self.badge = message[:badge]
         self.sound = message[:sound]
         self.other = message[:other]
+        self.category = message[:category]
         self.message_identifier = message[:message_identifier]
         self.content_available = !message[:content_available].nil?
         self.expiration_date = message[:expiration_date]
@@ -60,6 +61,7 @@ module APNS
       aps['aps']['alert'] = self.alert if self.alert
       aps['aps']['badge'] = self.badge if self.badge
       aps['aps']['sound'] = self.sound if self.sound
+      aps['aps']['category'] = self.category if self.category
       aps['aps']['content-available'] = 1 if self.content_available
 
       aps.merge!(self.other) if self.other
