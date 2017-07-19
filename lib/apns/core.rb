@@ -17,12 +17,16 @@ module APNS
     attr_accessor :host, :pems, :port, :pass
   end
 
-  def self.send_notification(device_token, app, message)
+  def self.pem=(file_path)
+    @pems = { default: file_path }
+  end
+
+  def self.send_notification(device_token, app = :default, message)
     n = APNS::Notification.new(device_token, message)
     self.send_notifications(app, [n])
   end
 
-  def self.send_notifications(app, notifications)
+  def self.send_notifications(app = :default, notifications)
     sock, ssl = self.open_connection(app)
 
     packed_nofications = self.packed_nofications(notifications)
@@ -49,7 +53,7 @@ module APNS
     bytes
   end
 
-  def self.feedback(app)
+  def self.feedback(app = :default)
     sock, ssl = self.feedback_connection(app)
 
     apns_feedback = []
@@ -67,7 +71,7 @@ module APNS
 
   protected
 
-  def self.open_connection(app)
+  def self.open_connection(app = :default)
     pem = self.pems[app]
     raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless pem
     raise "The path to your pem file does not exist!" unless File.exist?(pem)
@@ -81,7 +85,7 @@ module APNS
     return sock, ssl
   end
 
-  def self.feedback_connection(app)
+  def self.feedback_connection(app = :default)
     pem = self.pems[app]
     raise "The path to your pem file is not set. (APNS.pem = /path/to/cert.pem)" unless pem
     raise "The path to your pem file does not exist!" unless File.exist?(pem)
