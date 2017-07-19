@@ -25,7 +25,7 @@ After you have your .pem file. Set what host, port, certificate file location on
     APNS.host = 'gateway.push.apple.com' 
     # gateway.sandbox.push.apple.com is default
 
-    APNS.pem  = '/path/to/pem/file'
+    APNS.pems  = { app1: '/path/to/pem/file/of/app1', app2: '/path/to/pem/file/of/app2' }
     # this is the file you just created
     
     APNS.port = 2195 
@@ -41,9 +41,9 @@ Then to send a push notification you can either just send a string as the alert 
   <code>
     device_token = '123abc456def'
 
-    APNS.send_notification(device_token, 'Hello iPhone!' )
+    APNS.send_notification(device_token, :app1, 'Hello iPhone!')
 
-    APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
+    APNS.send_notification(device_token, :app2, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
   </code>
 </pre>
 
@@ -59,7 +59,7 @@ You can also send multiple notifications using the same connection to Apple:
 
     n2 = APNS::Notification.new(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default')
     
-    APNS.send_notifications([n1, n2])
+    APNS.send_notifications(:app1, [n1, n2])
   </code>
 </pre>
 
@@ -70,7 +70,7 @@ You can send other application specific information as well.
 
 <pre>
   <code>
-    APNS.send_notification(device_token, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default',
+    APNS.send_notification(device_token, :app1, :alert => 'Hello iPhone!', :badge => 1, :sound => 'default',
                                          :other => {:sent => 'with apns gem'})
   </code>
 </pre>

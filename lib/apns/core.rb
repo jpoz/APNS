@@ -17,12 +17,12 @@ module APNS
     attr_accessor :host, :pems, :port, :pass
   end
 
-  def self.send_notification(device_token, message, app)
+  def self.send_notification(device_token, app, message)
     n = APNS::Notification.new(device_token, message)
-    self.send_notifications([n], app)
+    self.send_notifications(app, [n])
   end
 
-  def self.send_notifications(notifications, app)
+  def self.send_notifications(app, notifications)
     sock, ssl = self.open_connection(app)
 
     packed_nofications = self.packed_nofications(notifications)
@@ -111,7 +111,6 @@ module APNS
   end
 
   def self.build_ssl(context, socket)
-    ssl = OpenSSL::SSL::SSLSocket.new(socket,context)
-    return ssl
+    OpenSSL::SSL::SSLSocket.new(socket,context)
   end
 end

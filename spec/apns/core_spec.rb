@@ -22,7 +22,7 @@ describe APNS do
       expect(APNS).to receive(:build_socket).with(::APNS.host, ::APNS.port) { socket }
       expect(APNS).to receive(:build_ssl).with(context, socket) { ssl }
 
-      ::APNS.send_notification("device_token1", "message1", :app1)
+      ::APNS.send_notification("device_token1", :app1, "message1")
     end
   end
 
