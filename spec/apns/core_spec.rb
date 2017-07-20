@@ -7,6 +7,51 @@ describe APNS do
     allow(File).to receive(:exist?) { true }
   end
 
+  describe ".send_notifications" do
+    it "accepts default app and pem" do
+      ::APNS.pem = 'default_pem'
+
+      n1 = APNS::Notification.new("token1", "message1")
+      n2 = APNS::Notification.new("token1", "message2")
+
+      context = OpenStruct.new
+      socket = OpenStruct.new
+      ssl = OpenStruct.new
+
+      expect(socket).to receive(:close)
+      expect(ssl).to receive(:close)
+      expect(ssl).to receive(:write).twice
+
+      expect(APNS).to receive(:build_context).with('default_pem') { context }
+      expect(APNS).to receive(:build_socket).with(::APNS.host, ::APNS.port) { socket }
+      expect(APNS).to receive(:build_ssl).with(context, socket) { ssl }
+
+      ::APNS.send_notifications([n1, n2])
+    end
+
+
+    it "accepts an app key" do
+      ::APNS.pems = { app1: 'cert1'}
+
+      n1 = APNS::Notification.new("token1", "message1")
+      n2 = APNS::Notification.new("token1", "message2")
+
+      context = OpenStruct.new
+      socket = OpenStruct.new
+      ssl = OpenStruct.new
+
+      expect(socket).to receive(:close)
+      expect(ssl).to receive(:close)
+      expect(ssl).to receive(:write).twice
+
+      expect(APNS).to receive(:build_context).with('cert1') { context }
+      expect(APNS).to receive(:build_socket).with(::APNS.host, ::APNS.port) { socket }
+      expect(APNS).to receive(:build_ssl).with(context, socket) { ssl }
+
+      ::APNS.send_notifications(:app1, [n1, n2])
+    end
+  end
+
   describe ".send_notification" do
     it "accepts default app and pem" do
       ::APNS.pem = 'default_pem'
@@ -41,7 +86,7 @@ describe APNS do
       expect(APNS).to receive(:build_socket).with(::APNS.host, ::APNS.port) { socket }
       expect(APNS).to receive(:build_ssl).with(context, socket) { ssl }
 
-      ::APNS.send_notification("device_token1", :app1, "message1")
+      ::APNS.send_notification(:app1, "device_token1", "message1")
     end
   end
 

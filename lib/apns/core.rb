@@ -17,16 +17,32 @@ module APNS
     attr_accessor :host, :pems, :port, :pass
   end
 
-  def self.pem=(file_path)
-    @pems = { default: file_path }
+  def self.pem=(default_pem_path)
+    @pems = { default: default_pem_path }
   end
 
-  def self.send_notification(device_token, app = :default, message)
+  def self.send_notification(app_or_device_token, device_token_or_message, message = nil)
+    app, device_token, message = begin
+      if message.nil?
+       [:default, app_or_device_token, device_token_or_message]
+      else
+       [app_or_device_token, device_token_or_message, message]
+      end
+    end
+
     n = APNS::Notification.new(device_token, message)
     self.send_notifications(app, [n])
   end
 
-  def self.send_notifications(app = :default, notifications)
+  def self.send_notifications(app_or_notifications, notifications = nil)
+    app, notifications = begin
+      if notifications.nil?
+        [:default, app_or_notifications]
+      else
+        [app_or_notifications, notifications]
+      end
+    end
+
     sock, ssl = self.open_connection(app)
 
     packed_nofications = self.packed_nofications(notifications)
